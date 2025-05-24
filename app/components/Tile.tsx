@@ -1,3 +1,11 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 type TileProps = {
   title?: string;
   subtitle?: string;
@@ -6,10 +14,16 @@ type TileProps = {
 
 const Tile = ({ title, subtitle, children }: TileProps) => {
   return (
-    <div className="bg-gray-200 p-4 m-4 rounded-lg shadow-md w-72 h-40 flex flex-col justify-between">
-      <h2 className="text-xl font-bold">{title}</h2>
-      <h3>{subtitle}</h3>
-      {children}
+    <div className="m-4">
+      <Card className="w-[300px] h-[200px] bg-zinc-100 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
+        <CardHeader>
+          <CardDescription>{title}</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums">
+            {subtitle}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>{children}</CardContent>
+      </Card>
     </div>
   );
 };
