@@ -5,21 +5,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Thermometer, Droplet, Zap, Lock, LockOpen } from "lucide-react";
+
+const IconMap: Record<string, React.ElementType | null> = {
+  temp: Thermometer,
+  humidity: Droplet,
+  energy: Zap,
+  dock: Lock,
+};
 
 type TileProps = {
   title?: string;
   subtitle?: string;
+  type: "temp" | "humidity" | "energy" | "dock";
   children?: React.ReactNode;
 };
 
-const Tile = ({ title, subtitle, children }: TileProps) => {
+const Tile = ({ title, subtitle, type, children }: TileProps) => {
+  let Icon = IconMap[type];
+
+  if (type === "dock" && subtitle !== "locked") {
+    Icon = LockOpen;
+  }
+
   return (
     <div className="m-4">
       <Card className="w-[300px] h-[200px] bg-zinc-100 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
         <CardHeader>
           <CardDescription>{title}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums">
-            {subtitle}
+            <div className="flex items-center">
+              {subtitle}
+              {Icon && <Icon className=" ml-4 w-8 h-8 text-zinc-950" />}
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent>{children}</CardContent>
