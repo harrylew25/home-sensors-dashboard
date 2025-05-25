@@ -1,9 +1,12 @@
+"use client";
+
 import { useAppSelector } from "@/lib/hooks";
 import { useGetSensorsQuery } from "@/lib/services/sensorsApi";
 import { Suspense } from "react";
 import "../msw";
 import LoadingScreen from "./LoadingScreen";
 import Tile from "./Tile";
+// import { useOffline } from "@/lib/customHooks/useOffline";
 
 const formatTimeStamp = (timestamp: string) => {
   return Intl.DateTimeFormat("en-MY", {
@@ -18,8 +21,15 @@ const formatTimeStamp = (timestamp: string) => {
 
 const SensorPanel = () => {
   const filterValue = useAppSelector((state) => state.filter.filter);
-
+  // const isOffline = useOffline();
   const { isFetching, data, refetch, isSuccess } = useGetSensorsQuery({});
+
+  // // Refetch sensors when coming back online
+  // useEffect(() => {
+  //   if (!isOffline) {
+  //     refetch();
+  //   }
+  // }, [isOffline, refetch]);
 
   if (isFetching && !data) {
     return <LoadingScreen numberOfLines={10} />;
