@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import "../msw";
 import LoadingScreen from "./LoadingScreen";
 import Tile from "./Tile";
-// import { useOffline } from "@/lib/customHooks/useOffline";
 import { toast } from "sonner";
 import { RefreshCcwIcon } from "lucide-react";
 import {
@@ -17,17 +16,15 @@ import {
 
 const SensorPanel = () => {
   const filterValue = useAppSelector((state) => state.filter.filter);
-  // const isOffline = useOffline();
   const { isFetching, data, refetch, isSuccess, isError } = useGetSensorsQuery(
-    {}
+    {},
+    {
+      pollingInterval: 30000,
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true, // Refetch when coming back online
+    }
   );
 
-  // // Refetch sensors when coming back online
-  // useEffect(() => {
-  //   if (!isOffline) {
-  //     refetch();
-  //   }
-  // }, [isOffline, refetch]);
   if (isError) {
     return (
       <div className="flex justify-center items-center flex-col">
@@ -51,11 +48,11 @@ const SensorPanel = () => {
 
   if (!isSuccess) {
     // TODO: Create a proper error handling component
-    return <div className="m-20">Error loading sensors data</div>;
-  }
-
-  if (isSuccess) {
-    toast("Successfully loaded sensors data");
+    return (
+      <div className="m-20">
+        Error loading sensors data. Please try again later
+      </div>
+    );
   }
 
   return (
@@ -88,6 +85,7 @@ const SensorPanel = () => {
                       : `${item.value}${item.unit || ""}`
                   }`}
                   type={item.type}
+                  data={item?.historicData}
                 />
               );
             })}
