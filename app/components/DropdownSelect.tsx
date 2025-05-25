@@ -9,21 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFilterStore } from "../store/useFilterStore";
-
-const sensorTypes = [
-  { value: "all", label: "All" },
-  { value: "temp", label: "Temperature" },
-  { value: "humidity", label: "Humidity" },
-  { value: "energy", label: "Energy Consumption" },
-  { value: "dock", label: "Lock Status" },
-];
+import { setFilter } from "@/lib/features/filter/filterSlice";
+import { useAppDispatch } from "@/lib/hooks";
+import { sensorTypes } from "../constants";
 
 const DropdownSelect = () => {
-  const setFilter = useFilterStore((state) => state.setFilter);
+  const dispatch = useAppDispatch();
+  const onValueChange = (value: string) => {
+    dispatch(
+      setFilter(value as "all" | "temp" | "humidity" | "energy" | "dock")
+    );
+  };
   return (
-    // @ts-expect-error
-    <Select onValueChange={(sensor) => setFilter(sensor)}>
+    <Select onValueChange={onValueChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Type of sensor" />
       </SelectTrigger>
