@@ -6,6 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Thermometer, Droplet, Zap, Lock, LockOpen } from "lucide-react";
+import LineChart from "./LineChart";
 
 const IconMap: Record<string, React.ElementType | null> = {
   temp: Thermometer,
@@ -18,10 +19,11 @@ type TileProps = {
   title?: string;
   subtitle?: string;
   type: "temp" | "humidity" | "energy" | "dock";
+  data?: Record<string, string | number>[];
   children?: React.ReactNode;
 };
 
-const Tile = ({ title, subtitle, type, children }: TileProps) => {
+const Tile = ({ title, subtitle, type, data, children }: TileProps) => {
   let Icon = IconMap[type];
 
   if (type === "dock" && subtitle !== "locked") {
@@ -30,7 +32,7 @@ const Tile = ({ title, subtitle, type, children }: TileProps) => {
 
   return (
     <div className="m-4">
-      <Card className="w-[300px] h-[200px] bg-zinc-100 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
+      <Card className="w-[300px] h-auto bg-zinc-100 shadow-md hover:shadow-lg transition-shadow duration-300 ease-in-out">
         <CardHeader>
           <CardDescription>{title}</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums">
@@ -40,7 +42,14 @@ const Tile = ({ title, subtitle, type, children }: TileProps) => {
             </div>
           </CardTitle>
         </CardHeader>
-        <CardContent>{children}</CardContent>
+        <CardContent>
+          {children}
+          {data && (
+            <div>
+              <LineChart data={data} />
+            </div>
+          )}
+        </CardContent>
       </Card>
     </div>
   );
