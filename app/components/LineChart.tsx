@@ -51,7 +51,7 @@ const LineChart = ({ data }: LineChart) => {
           content={<ChartTooltipContent hideLabel />}
         />
         <Line
-          type="natural"
+          type={`${lineDataKey === "lock" ? "linear" : "natural"}`}
           dataKey={lineDataKey}
           stroke={chartConfig[lineDataKey].color}
           dot={false}
