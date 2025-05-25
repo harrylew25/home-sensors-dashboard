@@ -5,3 +5,9 @@ export const sensorTypes = [
   { value: "energy", label: "Energy Consumption" },
   { value: "dock", label: "Lock Status" },
 ];
+
+export const THRESHOLD = {
+  TEMP: 40,
+  HUMIDITY: 20,
+  ENERGY: 2000,
+};

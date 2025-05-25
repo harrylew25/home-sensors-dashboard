@@ -7,22 +7,20 @@ import "../msw";
 import LoadingScreen from "./LoadingScreen";
 import Tile from "./Tile";
 // import { useOffline } from "@/lib/customHooks/useOffline";
-
-const formatTimeStamp = (timestamp: string) => {
-  return Intl.DateTimeFormat("en-MY", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).format(new Date(timestamp));
-};
+import { toast } from "sonner";
+import { RefreshCcwIcon } from "lucide-react";
+import {
+  formatLockStatus,
+  formatTimeStamp,
+  thresholdCheckMap,
+} from "./util/SensorPanel";
 
 const SensorPanel = () => {
   const filterValue = useAppSelector((state) => state.filter.filter);
   // const isOffline = useOffline();
-  const { isFetching, data, refetch, isSuccess } = useGetSensorsQuery({});
+  const { isFetching, data, refetch, isSuccess, isError } = useGetSensorsQuery(
+    {}
+  );
 
   // // Refetch sensors when coming back online
   // useEffect(() => {
@@ -30,6 +28,22 @@ const SensorPanel = () => {
   //     refetch();
   //   }
   // }, [isOffline, refetch]);
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center flex-col">
+        <div className="m-20">Error loading sensors data</div>
+
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="inline ml-2 text-gray-500 hover:text-blue-500 focus:outline-none"
+          aria-label="Refresh"
+        >
+          <RefreshCcwIcon />
+        </button>
+      </div>
+    );
+  }
 
   if (isFetching && !data) {
     return <LoadingScreen numberOfLines={10} />;
@@ -40,8 +54,13 @@ const SensorPanel = () => {
     return <div className="m-20">Error loading sensors data</div>;
   }
 
+  if (isSuccess) {
+    toast("Successfully loaded sensors data");
+  }
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
+      {/* Something caused to re-render 3 times here */}
       <div className="flex justify-center flex-wrap">
         {isSuccess &&
           data &&
@@ -53,11 +72,21 @@ const SensorPanel = () => {
             )
             .map((item) => {
               //TODO: fix the typescript error here
+              //  @ts-expect-error
+              const thresholdCheck = thresholdCheckMap(item.value)[item.type];
+              if (thresholdCheck && thresholdCheck.check()) {
+                toast(thresholdCheck.message);
+              }
+
               return (
                 <Tile
                   key={item.id}
                   title={item.name}
-                  subtitle={item.value}
+                  subtitle={`${
+                    item.type === "dock"
+                      ? formatLockStatus(item.value)
+                      : `${item.value}${item.unit || ""}`
+                  }`}
                   type={item.type}
                 />
               );
@@ -66,16 +95,15 @@ const SensorPanel = () => {
       <p>
         Last updated:
         {data?.time ? formatTimeStamp(data.time) : "Error"}
+        <button
+          type="button"
+          onClick={() => refetch()}
+          className="inline ml-2 text-gray-500 hover:text-blue-500 focus:outline-none"
+          aria-label="Refresh"
+        >
+          <RefreshCcwIcon />
+        </button>
       </p>
-      <button // TODO: change this to an icon button
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600 transition-colors"
-        onClick={() => {
-          console.log("button is clicked");
-          refetch();
-        }}
-      >
-        Refresh
-      </button>
     </Suspense>
   );
 };
