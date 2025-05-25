@@ -3,7 +3,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## Tech Stack
 
 Next JS
-Zustand
+RTK Query
 Mocking Service Worker (MSW)
 Shadcn UI Components
 
