@@ -62,7 +62,7 @@ graph TD
 --in actual production--
 
 - **Backend API (Production)**: In production, RTK Query's Workspace requests go to a real backend API.
-- **Smart Home Hub/IoT Platform**: This backend (Node.js, Python, AWS IoT, Home Assistant, etc.) acts as the bridge between your physical sensors/devices and your web application. For true real-time (push), it would likely use Web Sockets or MQTT. For this design, we're assuming it exposes an HTTP endpoint that we can poll.
+- **Smart Home Hub/IoT Platform**: This backend (Node.js, Python, AWS IoT, Home Assistant, etc.) acts as the bridge between your physical sensors/devices and your web application. For true real-time (push), it would likely use Web Sockets or MQTT.
 - **Physical Sensors/Devices**: The actual smart home hardware.
 
 ---
@@ -80,8 +80,8 @@ This file will define your RTK Query API service using `createApi`.
 - It sets a `reducerPath` (a unique name for this API slice in your Redux store).
 - It defines a `baseQuery` which specifies the base URL for your API requests.
 - Crucially, it defines an `endpoint` for fetching smart home data (`/api/sensors/data`).
-- The **`pollingInterval`** is set to `60000` milliseconds (1 minute) for the `getSensors` query. This is the core of your real-time tracking, ensuring data automatically refreshes every minute.
-- RTK Query will automatically generate React hooks (e.g., `useGetSmartHomeDataQuery`) from these endpoints for use in your components.
+- The **`pollingInterval`** is set to `3000` milliseconds (3 seconds) for the `getSensors` query. This is the core of your real-time tracking, ensuring data automatically refreshes every minute.
+- RTK Query will automatically generate React hooks (e.g., `useGetSensorsQuery`) from these endpoints for use in your components.
 
 ### 3.3. Redux Store Setup (`store.ts`)
 
