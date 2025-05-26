@@ -2,22 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
-
-interface SensorData {
-  time: number;
-  sensors: Array<{
-    id: string;
-    name: string;
-    type: string;
-    value: number;
-    unit?: string;
-    historicData?: Record<string, string>[];
-  }>;
-}
+import { Sensor } from "../services/sensorsApi";
 
 // Define the arguments the hook will take
 interface UseSensorValueAlertsOptions {
-  sensorData: SensorData | undefined; // The data from RTK Query
+  sensorData: Sensor | undefined; // The data from RTK Query
   monitoredSensorType: string; // The type of sensor to monitor (e.g., 'temperature')
   threshold: number; // The numeric threshold (e.g., 20)
   alertDurationMinutes: number; // How long the toast should stay visible (e.g., 2 minutes)
@@ -51,7 +40,7 @@ export function useSensorValueAlerts({
     if (!sensorData) return;
 
     // Find the specific sensor to monitor based on its type
-    const numericSensor = sensorData.sensors.find(
+    const numericSensor = sensorData.sensorData.find(
       (s) => s.type === monitoredSensorType && typeof s.value === "number"
     );
 

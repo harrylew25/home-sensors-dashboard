@@ -34,3 +34,11 @@ export const formatTimeStamp = (timestamp: string) => {
     second: "2-digit",
   }).format(new Date(timestamp));
 };
+
+export const ColorMapping = {
+  "Living Room": "bg-amber-300",
+  Kitchen: "bg-cyan-300",
+  Bedroom: "bg-green-300",
+  Bathroom: "bg-sky-300",
+  Office: "bg-purple-300",
+};
