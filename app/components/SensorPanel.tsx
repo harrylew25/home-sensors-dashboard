@@ -6,23 +6,32 @@ import { Suspense } from "react";
 import "../msw";
 import LoadingScreen from "./LoadingScreen";
 import Tile from "./Tile";
-import { toast } from "sonner";
+import { useSensorValueAlerts } from "@/lib/customHooks/useSensorValueAlerts";
 import { RefreshCcwIcon } from "lucide-react";
-import {
-  formatLockStatus,
-  formatTimeStamp,
-  thresholdCheckMap,
-} from "./util/SensorPanel";
+import { formatLockStatus, formatTimeStamp } from "./util/SensorPanel";
 
 const SensorPanel = () => {
   const filterValue = useAppSelector((state) => state.filter.filter);
   const { isFetching, data, refetch, isSuccess, isError } = useGetSensorsQuery(
     {},
     {
-      pollingInterval: 3000,
+      pollingInterval: 30000,
       refetchOnReconnect: true, // Refetch when coming back online
     }
   );
+
+  useSensorValueAlerts({
+    sensorData: data,
+    monitoredSensorType: "humidity", // Specify the type of sensor to watch
+    threshold: 20, // The numeric threshold
+    alertDurationMinutes: 1, // The 1-minute window
+  });
+  useSensorValueAlerts({
+    sensorData: data,
+    monitoredSensorType: "energy", // Specify the type of sensor to watch
+    threshold: 2000, // The numeric threshold
+    alertDurationMinutes: 1, // The 1-minute window
+  });
 
   if (isError) {
     return (
@@ -67,13 +76,6 @@ const SensorPanel = () => {
               ) => (filterValue === "all" ? fil : fil.type === filterValue)
             )
             .map((item) => {
-              //TODO: fix the typescript error here
-              //  @ts-expect-error
-              const thresholdCheck = thresholdCheckMap(item.value)[item.type];
-              if (thresholdCheck && thresholdCheck.check()) {
-                toast(thresholdCheck.message);
-              }
-
               return (
                 <Tile
                   key={item.id}

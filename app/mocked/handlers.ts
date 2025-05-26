@@ -67,6 +67,8 @@ const mockedData = {
     },
   ],
 };
+
+let testSqn = 0;
 export const handlers = [
   http.get("/api/sensors/data", () => {
     // This is to always return a fresh mocked data
@@ -76,9 +78,30 @@ export const handlers = [
       if (sensor.type === "dock") {
         // Simulate dock status toggling
         sensor.value = Math.random() > 0.5 ? 1 : 0; // Randomly locked or unlocked
+      } else if (sensor.type === "humidity") {
+        // Simulate energy consumption with a random value
+        if (testSqn === 0) {
+          sensor.value = Math.floor(Math.random() * 100) + 1; // Random value between 1000 and 6000 Wh
+          testSqn++;
+        } else if (testSqn === 1) {
+          sensor.value = sensor.value + 20;
+          testSqn++;
+        } else if (testSqn === 2) {
+          sensor.value = sensor.value - 20 < 0 ? 0 : sensor.value - 20;
+          testSqn = 0; // Reset sequence
+        }
       } else if (sensor.type === "energy") {
         // Simulate energy consumption with a random value
-        sensor.value = Math.floor(Math.random() * 5000) + 1000; // Random value between 1000 and 6000 Wh
+        if (testSqn === 0) {
+          sensor.value = Math.floor(Math.random() * 5000) + 1000; // Random value between 1000 and 6000 Wh
+          testSqn++;
+        } else if (testSqn === 1) {
+          sensor.value = sensor.value + 200;
+          testSqn++;
+        } else if (testSqn === 2) {
+          sensor.value = sensor.value - 250;
+          testSqn = 0; // Reset sequence
+        }
       } else {
         sensor.value = Math.floor(Math.random() * 100) + 1; // Random value between 1 and 100
       }
@@ -91,6 +114,7 @@ export const handlers = [
           ? generateHumidityList()
           : generateEnergyConsumptionList();
     });
+
     return HttpResponse.json(mockedData);
   }),
 ];
