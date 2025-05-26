@@ -12,13 +12,12 @@ import {
 import { setFilter } from "@/lib/features/filter/filterSlice";
 import { useAppDispatch } from "@/lib/hooks";
 import { sensorTypes } from "../constants";
+import { SensorType } from "@/lib/services/sensorsApi";
 
 const DropdownSelect = () => {
   const dispatch = useAppDispatch();
   const onValueChange = (value: string) => {
-    dispatch(
-      setFilter(value as "all" | "temp" | "humidity" | "energy" | "dock")
-    );
+    dispatch(setFilter(value as "all" | SensorType));
   };
   return (
     <Select onValueChange={onValueChange}>

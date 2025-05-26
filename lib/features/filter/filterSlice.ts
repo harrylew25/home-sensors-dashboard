@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import type { SensorType } from "../../services/sensorsApi";
 
-type FilterType = "all" | "temp" | "humidity" | "energy" | "dock";
+type FilterType = "all" | SensorType;
 
 export interface FilterStore {
   filter: FilterType;

@@ -95,8 +95,7 @@ const SensorPanel = () => {
           {isSuccess &&
             data?.sensors &&
             data.sensors.map((sensor) => {
-              const sensorData = sensor.sensorData;
-              sensorData.filter((item) =>
+              const sensorData = sensor.sensorData.filter((item) =>
                 filterValue === "all" ? item : item.type === filterValue
               );
               return (

@@ -14,7 +14,7 @@ const IconMap: Record<string, React.ElementType | null> = {
   temp: Thermometer,
   humidity: Droplet,
   energy: Zap,
-  dock: Lock,
+  lock: Lock,
 };
 
 type TileProps = {
@@ -28,7 +28,7 @@ type TileProps = {
 const Tile = ({ title, subtitle, type, data, children }: TileProps) => {
   const isOffline = useOffline();
   let Icon = IconMap[type];
-  if (type === "lock" && subtitle !== "locked") {
+  if (type === "lock" && subtitle !== "Locked") {
     Icon = LockOpen;
   }
 
