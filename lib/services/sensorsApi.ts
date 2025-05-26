@@ -9,11 +9,6 @@ export const sensorsApi = createApi({
     getSensors: builder.query({
       query: () => "data",
       keepUnusedDataFor: 15, // Cache for 15 seconds
-      transformResponse: (response) => {
-        // Transform the response if needed
-        console.log("there is a response");
-        return response;
-      },
     }),
   }),
 });
