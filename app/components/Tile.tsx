@@ -18,7 +18,7 @@ const IconMap: Record<string, React.ElementType | null> = {
 type TileProps = {
   title?: string;
   subtitle?: string;
-  type: "temp" | "humidity" | "energy" | "dock";
+  type: "temp" | "humidity" | "energy" | "lock";
   data?: Record<string, string | number>[];
   children?: React.ReactNode;
 };
@@ -26,7 +26,7 @@ type TileProps = {
 const Tile = ({ title, subtitle, type, data, children }: TileProps) => {
   let Icon = IconMap[type];
 
-  if (type === "dock" && subtitle !== "locked") {
+  if (type === "lock" && subtitle !== "locked") {
     Icon = LockOpen;
   }
 

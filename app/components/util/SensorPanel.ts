@@ -14,7 +14,7 @@ export const thresholdCheckMap = (value: number) => ({
     check: () => value < THRESHOLD.HUMIDITY,
     message: `The humidity is too low! ${value}%`,
   },
-  dock: {
+  lock: {
     check: () => value !== 1,
     message: `The door is not locked!`,
   },

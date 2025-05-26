@@ -81,7 +81,7 @@ const SensorPanel = () => {
                   key={item.id}
                   title={item.name}
                   subtitle={`${
-                    item.type === "dock"
+                    item.type === "lock"
                       ? formatLockStatus(item.value)
                       : `${item.value}${item.unit || ""}`
                   }`}
