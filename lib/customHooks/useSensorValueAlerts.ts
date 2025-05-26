@@ -6,11 +6,14 @@ import { Sensor } from "../services/sensorsApi";
 
 // Define the arguments the hook will take
 interface UseSensorValueAlertsOptions {
-  sensorData: Sensor | undefined; // The data from RTK Query
+  location: string; // Optional location to filter sensors
+  sensorData: Sensor[] | undefined; // The data from RTK Query
   monitoredSensorType: string; // The type of sensor to monitor (e.g., 'temperature')
   threshold: number; // The numeric threshold (e.g., 20)
   alertDurationMinutes: number; // How long the toast should stay visible (e.g., 2 minutes)
 }
+
+type NumericSensorStatus = "above" | "below" | "at";
 
 // Convert alert duration to milliseconds
 const getAlertDurationMs = (duration: number) => duration * 60 * 1000;
@@ -20,6 +23,7 @@ const getAlertDurationMs = (duration: number) => duration * 60 * 1000;
  * crossing a threshold and returning to it within a time window.
  */
 export function useSensorValueAlerts({
+  location,
   sensorData,
   monitoredSensorType,
   threshold,
@@ -29,18 +33,20 @@ export function useSensorValueAlerts({
   // Stores the ID of the specific alert toast (e.g., 'above 20' or 'below 20')
   const activeAlertToastId = useRef<string | number | undefined>(undefined);
   // Stores the last known "status" of the numeric value ('above', 'below', 'at')
-  const lastNumericStatus = useRef<"above" | "below" | "at" | null>(null);
+  const lastNumericStatus = useRef<NumericSensorStatus | null>(null);
   // Records the timestamp when the status last changed or an alert toast was shown
   const lastStatusChangeTime = useRef<number>(Date.now()); // Initialize with current time
 
   const alertDurationMs = getAlertDurationMs(alertDurationMinutes);
 
   useEffect(() => {
-    // Only proceed if valid sensor data is provided
-    if (!sensorData) return;
+    // Only proceed if valid sensor data is provided and not empty
+    if (!sensorData || sensorData.length === 0) return;
 
-    // Find the specific sensor to monitor based on its type
-    const numericSensor = sensorData.sensorData.find(
+    // Find the specific sensor to monitor based on its location and type
+    const targetLocationData = sensorData?.find((s) => s.location === location);
+    if (!targetLocationData) return;
+    const numericSensor = targetLocationData.sensorData?.find(
       (s) => s.type === monitoredSensorType && typeof s.value === "number"
     );
 
@@ -55,7 +61,7 @@ export function useSensorValueAlerts({
     }
 
     const currentValue = numericSensor.value;
-    let currentStatus: "above" | "below" | "at" = "at"; // Default status
+    let currentStatus: NumericSensorStatus = "at"; // Default status
 
     if (currentValue > threshold) {
       currentStatus = "above";
@@ -79,7 +85,7 @@ export function useSensorValueAlerts({
       activeAlertToastId.current = toast.info(
         `${numericSensor.name} is now ${currentValue} ${
           numericSensor.unit || ""
-        } (above ${threshold})!`,
+        } (above ${threshold})! - ${location}`,
         { duration: alertDurationMs, id: "sensor-alert" }
       );
       lastStatusChangeTime.current = now;
@@ -97,7 +103,7 @@ export function useSensorValueAlerts({
       activeAlertToastId.current = toast.info(
         `${numericSensor.name} is now ${currentValue} ${
           numericSensor.unit || ""
-        } (below ${threshold})!`,
+        } (below ${threshold})!  - ${location}`,
         { duration: alertDurationMs, id: "sensor-alert" }
       );
       lastStatusChangeTime.current = now;
@@ -116,7 +122,7 @@ export function useSensorValueAlerts({
       activeAlertToastId.current = toast.success(
         `${numericSensor.name} is back to ${currentValue} ${
           numericSensor.unit || ""
-        } (at ${threshold})!`,
+        } (at ${threshold})! - ${location}`,
         { duration: alertDurationMs, id: "sensor-alert" }
       );
       lastStatusChangeTime.current = now; // Reset time for next cycle
@@ -146,5 +152,5 @@ export function useSensorValueAlerts({
       lastNumericStatus.current = currentStatus;
       lastStatusChangeTime.current = now; // Only update time if actual status changes
     }
-  }, [sensorData, monitoredSensorType, threshold, alertDurationMs]); // Dependencies: reruns when these inputs change
+  }, [sensorData, monitoredSensorType, threshold, alertDurationMs, location]); // Dependencies: reruns when these inputs change
 }

@@ -23,15 +23,17 @@ const SensorPanel = () => {
       refetchOnReconnect: true, // Refetch when coming back online
     }
   );
-
+  // Custom hooks to monitor specific sensor values and trigger alerts
   useSensorValueAlerts({
-    sensorData: data?.sensors[0],
+    location: "Living Room", // Specify the location to monitor
+    sensorData: data?.sensors,
     monitoredSensorType: "humidity", // Specify the type of sensor to watch
     threshold: 20, // The numeric threshold
     alertDurationMinutes: 1, // The 1-minute window
   });
   useSensorValueAlerts({
-    sensorData: data?.sensors[0],
+    location: "Living Room", // Optional location to filter sensors
+    sensorData: data?.sensors,
     monitoredSensorType: "energy", // Specify the type of sensor to watch
     threshold: 2000, // The numeric threshold
     alertDurationMinutes: 1, // The 1-minute window
