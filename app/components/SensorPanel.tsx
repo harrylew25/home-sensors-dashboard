@@ -15,7 +15,7 @@ const SensorPanel = () => {
   const { isFetching, data, refetch, isSuccess, isError } = useGetSensorsQuery(
     {},
     {
-      pollingInterval: 30000,
+      pollingInterval: 3000, // Poll every 3 seconds
       refetchOnReconnect: true, // Refetch when coming back online
     }
   );
