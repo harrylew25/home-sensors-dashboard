@@ -36,9 +36,12 @@ export const formatTimeStamp = (timestamp: string) => {
 };
 
 export const ColorMapping = {
-  "Living Room": "bg-amber-300",
-  Kitchen: "bg-cyan-300",
-  Bedroom: "bg-green-300",
+  "Living Room":
+    "bg-gradient-to-br from-yellow-300 via-amber-400 to-amber-600 text-gray-800",
+  Kitchen: "bg-gradient-to-tr from-sky-400 via-blue-500 to-blue-700 text-white",
+  Bedroom:
+    "bg-gradient-to-bl from-green-700 via-emerald-600 to-green-400 text-white",
   Bathroom: "bg-sky-300",
-  Office: "bg-purple-300",
+  Office:
+    "bg-gradient-to-bl from-indigo-200 via-purple-300 to-pink-300 text-black",
 };

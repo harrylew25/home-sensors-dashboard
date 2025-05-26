@@ -106,7 +106,7 @@ const SensorPanel = () => {
                     }
                     rounded-lg shadow-md p-4 m-4 bg-opacity-80 hover:bg-opacity-100 transition-all duration-300 ease-in-out`}
                 >
-                  <p className="text-xl text-red-400">{sensor.location}</p>
+                  <p className="text-xl">{sensor.location}</p>
                   <div className="flex justify-center flex-wrap w-128">
                     {sensorData.map((dataItem) => (
                       <Tile
